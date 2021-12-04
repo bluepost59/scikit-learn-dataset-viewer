@@ -1,7 +1,7 @@
 console.log("view.js");
 
 window.onload = async () => {
-    test_plot_data();
+    // test_plot_data();
 
     const pyodide = await loadPyodide({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
@@ -11,6 +11,36 @@ window.onload = async () => {
     await pyodide.loadPackage("scikit-learn");
 
     console.log("pyodide is ready");
+
+    pyodide.runPython(`
+    import numpy as np
+    from sklearn.datasets import load_breast_cancer
+    from sklearn.manifold import TSNE
+
+    all_data = load_breast_cancer()
+
+    x0 = all_data.data[:,0]
+    x1 = all_data.data[:,1]
+    `);
+
+    // pyodide.runPython(`
+    // import numpy as np
+    // xx = np.random.rand(100,100)
+
+    // x0 = xx[:,0]
+    // x1 = xx[:,1]
+    // `);
+
+    const x0 = pyodide.globals.get("x0").toJs();
+    const x1 = pyodide.globals.get("x1").toJs();
+
+    Plotly.newPlot("graph_area", [{
+        x: x0,
+        y: x1,
+        mode: "markers",
+        type: "scatter",
+    }])
+
 }
 
 // まずばbreast_cancer_dataset
