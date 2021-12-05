@@ -20,29 +20,37 @@ window.onload = async () => {
     all_data = load_breast_cancer()
 
     tsne = TSNE(n_components=2,learning_rate=50)
-    x_embed=tsne.fit_transform(all_data.data)
+    x_embed = tsne.fit_transform(all_data.data)
 
-    x0 = x_embed[:,0]
-    x1 = x_embed[:,1]
+    xx_neg = x_embed[all_data.target == 0].T
+    xx_pos = x_embed[all_data.target == 1].T
     `);
 
-    // pyodide.runPython(`
-    // import numpy as np
-    // xx = np.random.rand(100,100)
+    const xx_neg = pyodide.globals.get("xx_neg").toJs();
+    const xx_pos = pyodide.globals.get("xx_pos").toJs();
 
-    // x0 = xx[:,0]
-    // x1 = xx[:,1]
-    // `);
-
-    const x0 = pyodide.globals.get("x0").toJs();
-    const x1 = pyodide.globals.get("x1").toJs();
+    console.log(xx_neg);
 
     Plotly.newPlot("graph_area", [{
-        x: x0,
-        y: x1,
+        name: "Negative",
+        x: xx_neg[0],
+        y: xx_neg[1],
         mode: "markers",
         type: "scatter",
-    }])
+        marker: {
+            color: "blue",
+        }
+    },
+    {
+        name: "Positive",
+        x: xx_pos[0],
+        y: xx_pos[1],
+        mode: "markers",
+        type: "scatter",
+        marker: {
+            color: "red",
+        }
+    }]);
 
 }
 
