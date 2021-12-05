@@ -19,8 +19,11 @@ window.onload = async () => {
 
     all_data = load_breast_cancer()
 
-    x0 = all_data.data[:,0]
-    x1 = all_data.data[:,1]
+    tsne = TSNE(n_components=2,learning_rate=50)
+    x_embed=tsne.fit_transform(all_data.data)
+
+    x0 = x_embed[:,0]
+    x1 = x_embed[:,1]
     `);
 
     // pyodide.runPython(`
