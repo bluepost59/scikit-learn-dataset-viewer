@@ -12,6 +12,10 @@ window.onload = async () => {
 
     console.log("pyodide is ready");
 
+    const loader = document.getElementById("loader_wrap");
+    console.log(loader);
+    loader.remove();
+
     pyodide.runPython(`
     import numpy as np
     from sklearn.datasets import load_breast_cancer
