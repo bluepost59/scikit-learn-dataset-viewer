@@ -1,8 +1,6 @@
 console.log("view.js");
 
 window.onload = async () => {
-    // test_plot_data();
-
     const pyodide = await loadPyodide({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
     });
@@ -12,10 +10,30 @@ window.onload = async () => {
 
     console.log("pyodide is ready");
 
+    // スライダー0の設定
+    const index_slider_0 = document.getElementById("index0");
+    const index_res_0 = document.getElementById("slider_res_0");
+    index_slider_0.disabled = false;
+
+    index_slider_0.oninput = () => {
+        index_res_0.innerText = index_slider_0.value;
+    };
+
+    //スライダー1の設定
+    const index_slider_1 = document.getElementById("index1");
+    const index_res_1 = document.getElementById("slider_res_1");
+    index_slider_1.disabled = false;
+
+    index_slider_1.oninput = () => {
+        index_res_1.innerText = index_slider_1.value;
+    };
+
+    // ローダーの削除
     const loader = document.getElementById("loader_wrap");
     console.log(loader);
     loader.remove();
 
+    // python実行
     pyodide.runPython(`
     import numpy as np
     from sklearn.datasets import load_breast_cancer
