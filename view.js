@@ -40,6 +40,12 @@ window.onload = async () => {
             index_res_y.innerText);
     };
 
+    // t-SNEボタンの設定
+    const tSNE_button = document.getElementById("tsne_button");
+    tSNE_button.onclick = () => {
+        plotTSNE(pyodide);
+    }
+
     // ローダーの削除
     const loader = document.getElementById("loader_wrap");
     console.log(loader);
@@ -52,39 +58,12 @@ window.onload = async () => {
     from sklearn.manifold import TSNE
 
     all_data = load_breast_cancer()
-
-    tsne = TSNE(n_components=2,learning_rate=50)
-    x_embed = tsne.fit_transform(all_data.data)
-
-    xx_neg = x_embed[all_data.target == 0].T
-    xx_pos = x_embed[all_data.target == 1].T
     `);
 
-    const xx_neg = pyodide.globals.get("xx_neg").toJs();
-    const xx_pos = pyodide.globals.get("xx_pos").toJs();
-
-    console.log(xx_neg);
-
-    Plotly.newPlot("graph_area", [{
-        name: "Negative",
-        x: xx_neg[0],
-        y: xx_neg[1],
-        mode: "markers",
-        type: "scatter",
-        marker: {
-            color: "blue",
-        }
-    },
-    {
-        name: "Positive",
-        x: xx_pos[0],
-        y: xx_pos[1],
-        mode: "markers",
-        type: "scatter",
-        marker: {
-            color: "red",
-        }
-    }]);
+    plotData(
+        pyodide,
+        index_res_x.innerText,
+        index_res_y.innerText);
 
 }
 
@@ -124,8 +103,42 @@ async function plotData(pyodide, index_x, index_y) {
             color: "red",
         }
     }]);
+}
 
+async function plotTSNE(pyodide) {
+    pyodide.runPython(`
+    tsne = TSNE(n_components=2,learning_rate=50)
+    x_embed = tsne.fit_transform(all_data.data)
 
+    xx_neg = x_embed[all_data.target == 0].T
+    xx_pos = x_embed[all_data.target == 1].T
+    `);
+
+    const xx_neg = pyodide.globals.get("xx_neg").toJs();
+    const xx_pos = pyodide.globals.get("xx_pos").toJs();
+
+    console.log(xx_neg);
+
+    Plotly.newPlot("graph_area", [{
+        name: "Negative",
+        x: xx_neg[0],
+        y: xx_neg[1],
+        mode: "markers",
+        type: "scatter",
+        marker: {
+            color: "blue",
+        }
+    },
+    {
+        name: "Positive",
+        x: xx_pos[0],
+        y: xx_pos[1],
+        mode: "markers",
+        type: "scatter",
+        marker: {
+            color: "red",
+        }
+    }]);
 }
 
 // まずばbreast_cancer_dataset
