@@ -1,18 +1,20 @@
 console.log("view.js");
 
 window.onload = async () => {
-    const pyodide = await loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
-    });
 
-    const loader_msg = document.getElementById("loader_msg");
-    loader_msg.innerText = "Loading NumPy";
-    await pyodide.loadPackage("numpy");
+    const start_button = document.getElementById("start_button");
+    start_button.onclick = async () => {
+        const loader_msg = document.getElementById("loader_msg");
+        loader_msg.innerText = "Loading Pyodide";
 
-    loader_msg.innerText = "Loading Scikit-learn";
-    await pyodide.loadPackage("scikit-learn");
 
-    loader_msg.innerText = "pyodide is ready";
+        const pyodide = await load_pyodide();
+        await launch_app(pyodide);
+        start_button.remove();
+    }
+}
+
+async function launch_app(pyodide) {
 
     // スライダー0の設定
     const index_slider_x = document.getElementById("index0");
@@ -60,11 +62,31 @@ window.onload = async () => {
     all_data = load_breast_cancer()
     `);
 
+    document.getElementById("warning_area").remove();
     plotData(
         pyodide,
         index_res_x.innerText,
         index_res_y.innerText);
+}
 
+async function load_pyodide() {
+    const loader_instance = document.getElementById("loader_instance");
+    loader_instance.className = "loader";
+
+
+    const pyodide = await loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/",
+    });
+
+    const loader_msg = document.getElementById("loader_msg");
+    loader_msg.innerText = "Loading NumPy";
+    await pyodide.loadPackage("numpy");
+
+    loader_msg.innerText = "Loading Scikit-learn";
+    await pyodide.loadPackage("scikit-learn");
+
+    loader_msg.innerText = "pyodide is ready";
+    return pyodide;
 }
 
 async function plotData(pyodide, index_x, index_y) {
