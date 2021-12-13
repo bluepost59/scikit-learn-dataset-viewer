@@ -32,13 +32,20 @@
         <input type="button" id="tsne_button" value="tSNE">
     </div>
 
+    <div id="warning_area">
+        <h3>但し書き</h3>
+        本デモはWebAssemblyを用いてブラウザにPythonの処理系をロードし、Pythonプログラムを実行します。<br>
+        初期化、ロード処理には数十秒程度かかります。<br>
+        Wi-Fiや固定回線でPC上で実行することをおすすめします。<br>
+    </div>
+    <button id="start_button">アプリを実行する</button>
+
     <div id="loader_wrap">
-        <div class="loader"></div>
-        <div id="loader_msg">Pyodide loading...</div>
+        <div id="loader_instance"></div>
+        <div id="loader_msg"></div>
     </div>
 
     <div id="container">
-
         <div id="graph_area"></div>
     </div>
 </body>
